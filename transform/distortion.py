@@ -2,10 +2,10 @@ import math
 import numpy as np
 
 class ImageDistortion():
-    def __normalize(self, p: int, s: int, cap: int) -> float:
+    def _normalize(self, p: int, s: int, cap: int) -> float:
         return (2 * (p + (cap - s) / 2) - cap + 1)/(cap - 1)
     
-    def __denormalize(self, p: float, s: int, cap: int) -> int:
+    def _denormalize(self, p: float, s: int, cap: int) -> int:
         return int(round((p + (s - 1) / (cap - 1)) * (cap - 1) / 2))
 
     def __compute_distorted_pixel(self, p: float, r: float, k: float) -> float:
@@ -21,10 +21,10 @@ class ImageDistortion():
     
     def transform(self, x: int, y: int, h: float, w: float, k: int) -> tuple[int, int]:
         cap = max(h, w)
-        x_norm, y_norm = self.__normalize(x, h, cap), self.__normalize(y, w, cap)
+        x_norm, y_norm = self._normalize(x, h, cap), self._normalize(y, w, cap)
         r_u = math.sqrt(x_norm ** 2 + y_norm ** 2)
         x_d, y_d = self.__distort(x_norm, y_norm, r_u, k)
-        x_u, y_u = self.__denormalize(x_d, h, cap), self.__denormalize(y_d, w, cap)
+        x_u, y_u = self._denormalize(x_d, h, cap), self._denormalize(y_d, w, cap)
         return x_u, y_u
     
     def distort(self, image: np.ndarray, k: float) -> np.ndarray:

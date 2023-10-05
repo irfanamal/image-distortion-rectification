@@ -1,7 +1,7 @@
 import cv2
 import math
 import numpy as np
-from distortion import ImageDistortion
+from .distortion import ImageDistortion
 
 class ImageRectification(ImageDistortion):
     def __compute_rectified_pixel(self, p: float, r: float, k: float) -> float:
@@ -24,10 +24,10 @@ class ImageRectification(ImageDistortion):
     
     def transform(self, x: int, y: int, h: float, w: float, k: int) -> tuple[int, int]:
         cap = max(h, w)
-        x_norm, y_norm = self.__normalize(x, h, cap), self.__normalize(y, w, cap)
+        x_norm, y_norm = self._normalize(x, h, cap), self._normalize(y, w, cap)
         r_u = math.sqrt(x_norm ** 2 + y_norm ** 2)
         x_d, y_d = self.__rectify(x_norm, y_norm, r_u, k)
-        x_u, y_u = self.__denormalize(x_d, h, cap), self.__denormalize(y_d, w, cap)
+        x_u, y_u = self._denormalize(x_d, h, cap), self._denormalize(y_d, w, cap)
         return x_u, y_u
     
     def rectify(self, image: np.ndarray, k: float) -> np.ndarray:

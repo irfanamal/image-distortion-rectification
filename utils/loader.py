@@ -10,7 +10,10 @@ def get_loader(image_dir: str, annotation: str, transform: Callable, distort: Ca
     return dataset, data_loader
 
 def train_loader(image_dir: str, annotation: str, batch_size: int = 16, shuffle: bool = True, num_workers: int = 0) -> DataLoader:
-    transformation = transforms.Compose([transforms.Resize(256, antialias=True), transforms.RandomCrop(256), transforms.RandomHorizontalFlip(), transforms.RandomVerticalFlip()])
+    transformation = transforms.Compose([transforms.Resize(256, antialias=True),
+                                        #  transforms.RandomCrop(256),
+                                         transforms.RandomHorizontalFlip(),
+                                         transforms.RandomVerticalFlip()])
     distortion = ImageDistortion().distort
     return get_loader(image_dir=image_dir, annotation=annotation, transform=transformation, distort=distortion, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
 

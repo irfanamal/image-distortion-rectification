@@ -7,8 +7,8 @@ from time import time
 from tqdm import tqdm
 from utils import train_loader, val_loader
 
-train_dataset, train_data_loader = train_loader('images/train/original', 'images/train/train.csv', batch_size=1, num_workers=4)
-val_dataset, val_data_loader = val_loader('images/val/distorted', 'images/val/val.csv', batch_size=1, num_workers=4)
+train_dataset, train_data_loader = train_loader('images/train/original', 'images/train/train.csv', batch_size=1, num_workers=2)
+val_dataset, val_data_loader = val_loader('images/val/distorted', 'images/val/val.csv', batch_size=1, num_workers=2)
 
 epochs = 20
 experiment = 'exp_2'

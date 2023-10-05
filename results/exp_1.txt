@@ -1,0 +1,2 @@
+test_loss: 0.15032962603246752 (Mean Absolute Error)
+test_time: 0.9408810811046303 (Seconds/Input AVG)
