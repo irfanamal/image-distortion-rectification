@@ -1,3 +1,5 @@
+import numpy as np
+
 from transform.distortion import ImageDistortion
 
 class BBox():
@@ -35,6 +37,7 @@ class BBox():
             x = self.__clip(x, w)
             y = self.__clip(y, h)
             points.append((x, y))
+        points = np.array(points)
         l = min(points[:, 0])
         r = max(points[:, 0])
         t = min(points[:, 1])
