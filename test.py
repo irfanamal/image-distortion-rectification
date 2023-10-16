@@ -11,7 +11,7 @@ from utils import val_loader
 
 test_dataset, test_data_loader = val_loader('images/test/distorted', 'images/test/test.csv', shuffle=False, batch_size=1, num_workers=2)
 
-experiment = 'exp_1'
+experiment = 'exp_2'
 os.makedirs(f'images/test/rectified/{experiment}', exist_ok=True)
 
 model = torch.load(f'models/{experiment}.pth').eval().cuda()

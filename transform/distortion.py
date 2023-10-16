@@ -13,10 +13,6 @@ class ImageDistortion():
         return p * distorted_r / r
 
     def __distort(self, x: float, y: float, r: float, k: float) -> tuple[float, float]:
-        if 4 * k * r ** 2 > 1:
-            return 2, 2
-        if r == 0 or k == 0:
-            return x, y
         return self.__compute_distorted_pixel(x, r, k), self.__compute_distorted_pixel(y, r, k)
     
     def transform(self, x: int, y: int, h: float, w: float, k: int) -> tuple[int, int]:
@@ -36,8 +32,11 @@ class ImageDistortion():
 
         for x in range(distorted_image.shape[0]):
             for y in range(distorted_image.shape[1]):
-                x_u, y_u = self.transform(x, y, h, w, k)
-                if 0 <= x_u and x_u < h and 0 <= y_u and y_u < w:
-                    distorted_image[x][y] = image[x_u][y_u]
+                try:
+                    x_u, y_u = self.transform(x, y, h, w, k)
+                    if 0 <= x_u and x_u < h and 0 <= y_u and y_u < w:
+                        distorted_image[x][y] = image[x_u][y_u]
+                except:
+                    continue
 
         return distorted_image.astype(np.uint8)

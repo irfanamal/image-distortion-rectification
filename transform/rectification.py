@@ -9,10 +9,6 @@ class ImageRectification(ImageDistortion):
         return p * rectified_r / r
     
     def __rectify(self, x: float, y: float, r: float, k: float) -> tuple[float, float]:
-        if k * r ** 2 == -1:
-            return 2, 2
-        if r == 0 or k == 0:
-            return x, y
         return self.__compute_rectified_pixel(x, r, k), self.__compute_rectified_pixel(y, r, k)
     
     def __sharpen(self, image: np.ndarray) -> np.ndarray:
@@ -39,8 +35,11 @@ class ImageRectification(ImageDistortion):
 
         for x in range(rectified_image.shape[0]):
             for y in range(rectified_image.shape[1]):
-                x_u, y_u = self.transform(x, y, h, w, k)
-                if 0 <= x_u and x_u < h and 0 <= y_u and y_u < w:
-                    rectified_image[x][y] = image[x_u][y_u]
+                try:
+                    x_u, y_u = self.transform(x, y, h, w, k)
+                    if 0 <= x_u and x_u < h and 0 <= y_u and y_u < w:
+                        rectified_image[x][y] = image[x_u][y_u]
+                except:
+                    continue
 
         return self.__sharpen(cv2.medianBlur(rectified_image.astype(np.uint8), 3))

@@ -16,10 +16,10 @@ class BBox():
         return p
 
     def convert_2_pixel(self, w: int, h: int) -> tuple[tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]]:
-        l = int((self.x - self.w / 2) * w)
-        r = int((self.x + self.w / 2) * w)
-        t = int((self.y - self.h / 2) * h)
-        b = int((self.y + self.h / 2) * h)
+        l = int(round((self.x - self.w / 2) * w))
+        r = int(round((self.x + self.w / 2) * w))
+        t = int(round((self.y - self.h / 2) * h))
+        b = int(round((self.y + self.h / 2) * h))
 
         l = self.__clip(l, w)
         r = self.__clip(r, w)
