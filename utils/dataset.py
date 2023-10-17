@@ -6,7 +6,9 @@ import random
 import torch
 
 from torch.utils.data import Dataset
+from torchvision import transforms
 from transform.gaussian import InvertedGaussian
+from transform.pad import Pad
 from typing import Callable
 
 class DistortedImageDataset(Dataset):
@@ -16,6 +18,7 @@ class DistortedImageDataset(Dataset):
         self.distort = distort
         self.transform = transform
         self.annotation = pd.read_csv(annotation)
+        self.weight_map = InvertedGaussian().generate((256, 256))
 
     def __len__(self) -> int:
         return self.annotation.shape[0]
@@ -28,6 +31,10 @@ class DistortedImageDataset(Dataset):
         if self.transform:
             image_tensor = self.transform(image_tensor)
 
+        size = (max(image_tensor.size()[-2:]), max(image_tensor.size()[-2:]))
+        transform_extension = transforms.Compose([Pad(size), transforms.Resize(256, antialias=True)])
+        image_tensor = transform_extension(image_tensor)
+
         image = np.moveaxis(image_tensor.numpy(), 0, -1)
 
         k = None
@@ -36,14 +43,10 @@ class DistortedImageDataset(Dataset):
             image = self.distort(image, k)
         else:
             k = self.annotation.loc[index, 'k']
-
+            
         edge_map = np.expand_dims(cv2.Canny(image, 255/3, 255).astype(np.float32), axis=-1)/255
-
-        weight_map = InvertedGaussian().generate(image)
-        image = (image.astype(np.float32) / 255) + weight_map
-
+        image = (image.astype(np.float32) / 255) + self.weight_map
         feature = np.concatenate((image, edge_map), axis=-1)
         feature = np.moveaxis(feature, -1, 0)
-        feature = torch.from_numpy(feature)
 
-        return feature, torch.Tensor([k])
+        return torch.from_numpy(feature), torch.Tensor([k])

@@ -19,10 +19,10 @@ class InvertedGaussian():
 
         return weight
 
-    def generate(self, image: np.ndarray) -> np.ndarray:
-        h, w, _ = image.shape
+    def generate(self, shape: tuple) -> np.ndarray:
+        h, w = shape
 
-        matrix = np.zeros_like(image).astype(np.float32)
+        matrix = np.zeros(shape=(h, w, 3)).astype(np.float32)
         for y in range(h):
             for x in range(w):
                 x_n, y_n = self.__normalize(x, y, w, h)
